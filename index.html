@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>检索 - 高等教育出版社</title>
+
+    <link rel="stylesheet" href="css/ios-navigation.css">
+    <link rel="stylesheet" href="css/ios-components.css">
+
+    <style>
+        /* ===== 统一检索页 - 天眼查风格 ===== */
+
+        body {
+            padding-bottom: 70px;
+            background: #f5f7fa;
+        }
+
+        /* ===== 顶部搜索区 ===== */
+        .search-home {
+            background: linear-gradient(135deg, #0052ff 0%, #0066cc 100%);
+            padding: 20px 16px 24px;
+        }
+
+        .search-home-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .unified-search-box {
+            width: 100%;
+            padding: 14px 16px;
+            background: #fff;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .unified-search-box .search-icon {
+            width: 20px;
+            height: 20px;
+            color: #0052ff;
+            flex-shrink: 0;
+        }
+
+        .unified-search-box .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+        }
+
+        .unified-search-box .search-input::placeholder {
+            color: #999;
+        }
+
+        .unified-search-box .search-btn {
+            padding: 8px 16px;
+            background: #0052ff;
+            color: #fff;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            flex-shrink: 0;
+        }
+
+        /* ===== Tab切换区 ===== */
+        .tab-switch-section {
+            padding: 16px;
+            background: #fff;
+        }
+
+        .tab-switch {
+            display: flex;
+            gap: 12px;
+        }
+
+        .tab-switch-item {
+            flex: 1;
+            padding: 12px 16px;
+            background: #f5f7fa;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 15px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-switch-item.active {
+            background: #0052ff;
+            color: #fff;
+        }
+
+        /* ===== 初始化引导 ===== */
+        .home-guide {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            min-height: 300px;
+            text-align: center;
+            background: #f5f7fa;
+        }
+
+        .home-guide-icon {
+            width: 64px;
+            height: 64px;
+            color: #0052ff;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .home-guide-text {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* ===== 筛选入口栏 ===== */
+        .filter-entry-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #fff;
+        }
+
+        .filter-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            background: #f5f7fa;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-toggle-btn.active {
+            background: #e8f4fd;
+            color: #0052ff;
+        }
+
+        .filter-toggle-btn .arrow-icon {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        .filter-toggle-btn.expanded .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .result-count {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .result-count .count-num {
+            color: #0052ff;
+            font-weight: 500;
+        }
+
+        /* ===== 筛选面板 ===== */
+        .filter-panel {
+            background: #fff;
+            max-height: 1200px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .filter-panel.collapsed {
+            max-height: 0;
+        }
+
+        .filter-panel-content {
+            padding: 16px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .filter-grid .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-field-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 10px 12px;
+            background: #f5f7fa;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+        }
+
+        .filter-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 32px;
+        }
+
+        .filter-section-title {
+            font-size: 13px;
+            color: #999;
+            margin: 16px 0 8px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .filter-reset-btn,
+        .filter-search-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+        }
+
+        .filter-reset-btn {
+            background: #f5f7fa;
+            color: #666;
+        }
+
+        .filter-search-btn {
+            background: #0052ff;
+            color: #fff;
+        }
+
+        /* ===== 结果列表 ===== */
+        .result-list {
+            padding: 12px 16px;
+            background: #f5f7fa;
+        }
+
+        .result-list.hidden {
+            display: none;
+        }
+
+        /* ===== 教师卡片 ===== */
+        .teacher-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .teacher-card:active {
+            transform: scale(0.98);
+        }
+
+        .teacher-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .teacher-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0052ff 0%, #0066cc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .teacher-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .teacher-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .teacher-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .academician-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            font-size: 10px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .teacher-org-region {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .teacher-title-row {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .teacher-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .cooperation-tag {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .cooperation-tag.cooperated {
+            background: #e8f8e8;
+            color: #05b169;
+        }
+
+        .cooperation-tag.not-cooperated {
+            background: #f5f5f5;
+            color: #999;
+        }
+
+        .view-detail-link {
+            font-size: 12px;
+            color: #0052ff;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .view-detail-link::after {
+            content: '→';
+        }
+
+        /* ===== 高校卡片 ===== */
+        .university-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .university-card:active {
+            transform: scale(0.98);
+        }
+
+        .university-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .university-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #0052ff 0%, #0066cc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .university-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .university-name-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .university-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .university-badge {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .university-badge.highlight {
+            background: rgba(0, 82, 255, 0.1);
+            color: #0052ff;
+            border: 1px solid rgba(0, 82, 255, 0.2);
+        }
+
+        .university-badge.normal {
+            background: #e8f4fd;
+            color: #0052ff;
+        }
+
+        .university-address {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* ===== 空状态 ===== */
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #999;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state .empty-text {
+            font-size: 14px;
+        }
+
+        /* ===== 加载更多 ===== */
+        .load-more {
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .load-more.loading::before {
+            content: '';
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #eee;
+            border-top-color: #0052ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 顶部搜索区 ===== -->
+    <div class="search-home">
+        <div class="search-home-title">高等教育出版社</div>
+        <div class="unified-search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索作者姓名、单位、学科...">
+            <button class="search-btn" onclick="executeSearch()">搜索</button>
+        </div>
+    </div>
+
+    <!-- ===== Tab切换区 ===== -->
+    <div class="tab-switch-section">
+        <div class="tab-switch">
+            <div class="tab-switch-item active" data-tab="author" onclick="switchTab('author')">教师作者</div>
+            <div class="tab-switch-item" data-tab="university" onclick="switchTab('university')">高校</div>
+        </div>
+    </div>
+
+    <!-- ===== 筛选入口栏 ===== -->
+    <div class="filter-entry-bar" id="filterEntryBar">
+        <div class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleFilter()">
+            <span>筛选条件</span>
+            <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="result-count" id="resultCount">
+            共收录 <span class="count-num" id="resultTotal">20</span> 位作者
+        </div>
+    </div>
+
+    <!-- ===== 筛选面板 ===== -->
+    <div class="filter-panel" id="filterPanel">
+        <div class="filter-panel-content">
+            <!-- 逻辑关系 -->
+            <div class="filter-field full-width">
+                <label class="filter-field-label">逻辑关系</label>
+                <select class="filter-select" id="logicMode">
+                    <option value="and">且（满足全部条件）</option>
+                    <option value="or">或（满足任一条件）</option>
+                </select>
+            </div>
+
+            <!-- 教师筛选字段 -->
+            <div id="authorFilterFields">
+                <div class="filter-grid" style="margin-top:12px;">
+                    <div class="filter-field">
+                        <label class="filter-field-label">作者姓名</label>
+                        <input type="text" class="filter-input" id="authorName" placeholder="输入作者姓名">
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">所属单位</label>
+                        <input type="text" class="filter-input" id="organization" placeholder="输入所属单位">
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">所属地区</label>
+                        <select class="filter-select" id="authorRegion">
+                            <option value="">全部地区</option>
+                            <option value="北京">北京</option>
+                            <option value="天津">天津</option>
+                            <option value="河北">河北</option>
+                            <option value="山西">山西</option>
+                            <option value="内蒙古">内蒙古</option>
+                            <option value="辽宁">辽宁</option>
+                            <option value="吉林">吉林</option>
+                            <option value="黑龙江">黑龙江</option>
+                            <option value="上海">上海</option>
+                            <option value="江苏">江苏</option>
+                            <option value="浙江">浙江</option>
+                            <option value="安徽">安徽</option>
+                            <option value="福建">福建</option>
+                            <option value="江西">江西</option>
+                            <option value="山东">山东</option>
+                            <option value="河南">河南</option>
+                            <option value="湖北">湖北</option>
+                            <option value="湖南">湖南</option>
+                            <option value="广东">广东</option>
+                            <option value="广西">广西</option>
+                            <option value="海南">海南</option>
+                            <option value="重庆">重庆</option>
+                            <option value="四川">四川</option>
+                            <option value="贵州">贵州</option>
+                            <option value="云南">云南</option>
+                            <option value="西藏">西藏</option>
+                            <option value="陕西">陕西</option>
+                            <option value="甘肃">甘肃</option>
+                            <option value="青海">青海</option>
+                            <option value="宁夏">宁夏</option>
+                            <option value="新疆">新疆</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">学科</label>
+                        <select class="filter-select" id="discipline">
+                            <option value="">全部学科</option>
+                            <option value="哲学">哲学</option>
+                            <option value="经济学">经济学</option>
+                            <option value="法学">法学</option>
+                            <option value="教育学">教育学</option>
+                            <option value="文学">文学</option>
+                            <option value="历史学">历史学</option>
+                            <option value="理学">理学</option>
+                            <option value="工学">工学</option>
+                            <option value="农学">农学</option>
+                            <option value="医学">医学</option>
+                            <option value="军事学">军事学</option>
+                            <option value="管理学">管理学</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">专业方向</label>
+                        <select class="filter-select" id="specialty">
+                            <option value="">全部专业</option>
+                            <option value="数学">数学</option>
+                            <option value="物理学">物理学</option>
+                            <option value="化学">化学</option>
+                            <option value="计算机">计算机</option>
+                            <option value="电子">电子</option>
+                            <option value="物理">物理</option>
+                            <option value="临床">临床</option>
+                            <option value="金融">金融</option>
+                            <option value="中文">中文</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">职称等级</label>
+                        <select class="filter-select" id="titleLevel">
+                            <option value="">全部等级</option>
+                            <option value="正高级">正高级</option>
+                            <option value="副高级">副高级</option>
+                            <option value="中级">中级</option>
+                            <option value="初级">初级</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">职称称谓</label>
+                        <select class="filter-select" id="titleName">
+                            <option value="">全部称谓</option>
+                            <option value="教授">教授</option>
+                            <option value="副教授">副教授</option>
+                            <option value="讲师">讲师</option>
+                            <option value="助教">助教</option>
+                        </select>
+                    </div>
+                    <div class="filter-field full-width">
+                        <label class="filter-field-label">擅长领域</label>
+                        <input type="text" class="filter-input" id="expertise" placeholder="输入擅长领域关键词">
+                    </div>
+                </div>
+                <div class="filter-section-title">高级筛选</div>
+                <div class="filter-grid">
+                    <div class="filter-field">
+                        <label class="filter-field-label">是否有合作</label>
+                        <select class="filter-select" id="cooperationStatus">
+                            <option value="">全部状态</option>
+                            <option value="1">已合作</option>
+                            <option value="0">未合作</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">是否有院士</label>
+                        <select class="filter-select" id="academicianType">
+                            <option value="">全部类型</option>
+                            <option value="中科院院士">中科院院士</option>
+                            <option value="工程院院士">工程院院士</option>
+                            <option value="none">无院士头衔</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 高校筛选字段 -->
+            <div id="universityFilterFields" style="display:none;">
+                <div class="filter-grid" style="margin-top:12px;">
+                    <div class="filter-field full-width">
+                        <label class="filter-field-label">高校名称</label>
+                        <input type="text" class="filter-input" id="universityName" placeholder="输入高校名称">
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">所属地区</label>
+                        <select class="filter-select" id="uniRegion">
+                            <option value="">全部地区</option>
+                            <option value="11">北京</option>
+                            <option value="12">天津</option>
+                            <option value="13">河北</option>
+                            <option value="14">山西</option>
+                            <option value="15">内蒙古</option>
+                            <option value="21">辽宁</option>
+                            <option value="22">吉林</option>
+                            <option value="23">黑龙江</option>
+                            <option value="31">上海</option>
+                            <option value="32">江苏</option>
+                            <option value="33">浙江</option>
+                            <option value="34">安徽</option>
+                            <option value="35">福建</option>
+                            <option value="36">江西</option>
+                            <option value="37">山东</option>
+                            <option value="41">河南</option>
+                            <option value="42">湖北</option>
+                            <option value="43">湖南</option>
+                            <option value="44">广东</option>
+                            <option value="45">广西</option>
+                            <option value="46">海南</option>
+                            <option value="50">重庆</option>
+                            <option value="51">四川</option>
+                            <option value="52">贵州</option>
+                            <option value="53">云南</option>
+                            <option value="54">西藏</option>
+                            <option value="61">陕西</option>
+                            <option value="62">甘肃</option>
+                            <option value="63">青海</option>
+                            <option value="64">宁夏</option>
+                            <option value="65">新疆</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">办学类型</label>
+                        <select class="filter-select" id="schoolType">
+                            <option value="">全部类型</option>
+                            <option value="公办">公办</option>
+                            <option value="民办">民办</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">办学层次</label>
+                        <select class="filter-select" id="educationLevel">
+                            <option value="">全部层次</option>
+                            <option value="本科">本科</option>
+                            <option value="研究生">研究生</option>
+                            <option value="大专">大专</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">主管部门</label>
+                        <select class="filter-select" id="governingBody">
+                            <option value="">全部部门</option>
+                            <option value="教育部">教育部</option>
+                            <option value="省属">省属</option>
+                            <option value="部属">部属</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">学校类型</label>
+                        <select class="filter-select" id="schoolCategory">
+                            <option value="">全部类型</option>
+                            <option value="普通高等学校">普通高等学校</option>
+                            <option value="成人高等学校">成人高等学校</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-section-title">高级筛选</div>
+                <div class="filter-grid">
+                    <div class="filter-field">
+                        <label class="filter-field-label">是否有合作</label>
+                        <select class="filter-select" id="uniHasCooperation">
+                            <option value="">全部状态</option>
+                            <option value="1">已合作</option>
+                            <option value="0">未合作</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label class="filter-field-label">是否有院士</label>
+                        <select class="filter-select" id="uniHasAcademician">
+                            <option value="">全部</option>
+                            <option value="1">有院士</option>
+                            <option value="0">无院士</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="filter-actions">
+                <button class="filter-reset-btn" onclick="resetFilters()">重置</button>
+                <button class="filter-search-btn" onclick="executeSearch()">搜索</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 初始化引导 ===== -->
+    <div class="home-guide" id="homeGuide">
+        <svg class="home-guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <div class="home-guide-text">输入关键词开始检索</div>
+    </div>
+
+    <!-- ===== 结果列表 ===== -->
+    <div class="result-list" id="resultList"></div>
+
+    <!-- ===== 加载更多 ===== -->
+    <div class="load-more" id="loadMore" style="display:none;">上拉加载更多</div>
+
+    <!-- ===== 底部导航 ===== -->
+    <nav class="ios-tab-nav">
+        <a href="index.html" class="ios-tab-item active">
+            <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <span class="ios-tab-label">检索</span>
+        </a>
+        <a href="my.html" class="ios-tab-item">
+            <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span class="ios-tab-label">我的</span>
+        </a>
+    </nav>
+
+    <script>
+    // ===================================================================
+    // 统一检索页 - 主逻辑
+    // ===================================================================
+
+    // ---- 状态变量 ----
+    let currentTab = 'author';       // 'author' | 'university'
+    let hasSearched = false;
+    let currentData = [];
+
+    // ---- 模拟数据：教师（20条，覆盖所有筛选字段） ----
+    const authorsData = [
+        { id: 'A001', name: '张悠慧', avatar: '张', organization: '清华大学', region: '北京', titleLevel: '正高级', titleName: '教授', discipline: '工学', major: '计算机', academician: '中科院院士', cooperation: true, cooperationCount: 45 },
+        { id: 'A002', name: '李飞飞', avatar: '李', organization: '北京大学', region: '北京', titleLevel: '正高级', titleName: '教授', discipline: '理学', major: '数学', academician: null, cooperation: true, cooperationCount: 32 },
+        { id: 'A003', name: '王选', avatar: '王', organization: '复旦大学', region: '上海', titleLevel: '正高级', titleName: '教授', discipline: '工学', major: '计算机', academician: '工程院院士', cooperation: true, cooperationCount: 78 },
+        { id: 'A004', name: '赵东元', avatar: '赵', organization: '复旦大学', region: '上海', titleLevel: '正高级', titleName: '教授', discipline: '理学', major: '化学', academician: '中科院院士', cooperation: true, cooperationCount: 56 },
+        { id: 'A005', name: '钱学森', avatar: '钱', organization: '上海交通大学', region: '上海', titleLevel: '正高级', titleName: '教授', discipline: '工学', major: '电子', academician: '中科院院士', cooperation: true, cooperationCount: 89 },
+        { id: 'A006', name: '孙家栋', avatar: '孙', organization: '哈尔滨工业大学', region: '黑龙江', titleLevel: '正高级', titleName: '教授', discipline: '工学', major: '电子', academician: '中科院院士', cooperation: false, cooperationCount: 0 },
+        { id: 'A007', name: '周光召', avatar: '周', organization: '中国科学技术大学', region: '安徽', titleLevel: '正高级', titleName: '教授', discipline: '理学', major: '物理', academician: '中科院院士', cooperation: true, cooperationCount: 67 },
+        { id: 'A008', name: '吴文俊', avatar: '吴', organization: '中国科学院数学与系统科学研究院', region: '北京', titleLevel: '正高级', titleName: '教授', discipline: '理学', major: '数学', academician: '中科院院士', cooperation: true, cooperationCount: 23 },
+        { id: 'A009', name: '郑强', avatar: '郑', organization: '浙江大学', region: '浙江', titleLevel: '正高级', titleName: '教授', discipline: '工学', major: '化学', academician: null, cooperation: true, cooperationCount: 15 },
+        { id: 'A010', name: '陈薇', avatar: '陈', organization: '军事科学院', region: '北京', titleLevel: '正高级', titleName: '教授', discipline: '医学', major: '临床', academician: '工程院院士', cooperation: true, cooperationCount: 34 },
+        { id: 'A011', name: '韩启德', avatar: '韩', organization: '北京大学', region: '北京', titleLevel: '正高级', titleName: '教授', discipline: '医学', major: '临床', academician: '中科院院士', cooperation: true, cooperationCount: 41 },
+        { id: 'A012', name: '杨振宁', avatar: '杨', organization: '清华大学', region: '北京', titleLevel: '正高级', titleName: '教授', discipline: '理学', major: '物理', academician: '中科院院士', cooperation: true, cooperationCount: 12 },
+        { id: 'A013', name: '林毅夫', avatar: '林', organization: '北京大学', region: '北京', titleLevel: '正高级', titleName: '教授', discipline: '经济学', major: '金融', academician: null, cooperation: true, cooperationCount: 28 },
+        { id: 'A014', name: '莫言', avatar: '莫', organization: '北京师范大学', region: '北京', titleLevel: '正高级', titleName: '教授', discipline: '文学', major: '中文', academician: null, cooperation: false, cooperationCount: 0 },
+        { id: 'A015', name: '潘建伟', avatar: '潘', organization: '中国科学技术大学', region: '安徽', titleLevel: '正高级', titleName: '教授', discipline: '理学', major: '物理', academician: '中科院院士', cooperation: true, cooperationCount: 52 },
+        { id: 'A016', name: '施一公', avatar: '施', organization: '西湖大学', region: '浙江', titleLevel: '正高级', titleName: '教授', discipline: '理学', major: '化学', academician: '中科院院士', cooperation: true, cooperationCount: 38 },
+        { id: 'A017', name: '张伯礼', avatar: '张', organization: '天津中医药大学', region: '天津', titleLevel: '正高级', titleName: '教授', discipline: '医学', major: '临床', academician: '工程院院士', cooperation: true, cooperationCount: 29 },
+        { id: 'A018', name: '怀进鹏', avatar: '怀', organization: '北京航空航天大学', region: '北京', titleLevel: '正高级', titleName: '教授', discipline: '工学', major: '计算机', academician: '中科院院士', cooperation: true, cooperationCount: 19 },
+        { id: 'A019', name: '刘慈欣', avatar: '刘', organization: '华北水利水电大学', region: '河南', titleLevel: '中级', titleName: '讲师', discipline: '工学', major: '电子', academician: null, cooperation: false, cooperationCount: 0 },
+        { id: 'A020', name: '屠呦呦', avatar: '屠', organization: '中国中医科学院', region: '北京', titleLevel: '正高级', titleName: '教授', discipline: '医学', major: '临床', academician: null, cooperation: true, cooperationCount: 15 },
+    ];
+
+    // ---- 模拟数据：高校（15条，覆盖所有筛选字段） ----
+    const universitiesData = [
+        { id: 'U001', name: '北京大学', province: '11', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 156, hasCooperation: '1', cooperationCount: 89, coauthorCount: 45, totalAuthors: 1234, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U002', name: '清华大学', province: '11', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 178, hasCooperation: '1', cooperationCount: 102, coauthorCount: 56, totalAuthors: 1567, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U003', name: '复旦大学', province: '31', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 98, hasCooperation: '1', cooperationCount: 67, coauthorCount: 34, totalAuthors: 890, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U004', name: '上海交通大学', province: '31', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 112, hasCooperation: '1', cooperationCount: 78, coauthorCount: 41, totalAuthors: 1023, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U005', name: '浙江大学', province: '33', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 89, hasCooperation: '1', cooperationCount: 56, coauthorCount: 28, totalAuthors: 756, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U006', name: '南京大学', province: '32', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 76, hasCooperation: '1', cooperationCount: 45, coauthorCount: 23, totalAuthors: 678, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U007', name: '武汉大学', province: '42', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 65, hasCooperation: '1', cooperationCount: 34, coauthorCount: 17, totalAuthors: 543, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U008', name: '华中科技大学', province: '42', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 58, hasCooperation: '0', cooperationCount: 0, coauthorCount: 0, totalAuthors: 456, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U009', name: '中山大学', province: '44', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 52, hasCooperation: '1', cooperationCount: 28, coauthorCount: 14, totalAuthors: 678, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U010', name: '四川大学', province: '51', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 48, hasCooperation: '1', cooperationCount: 23, coauthorCount: 12, totalAuthors: 567, isDoubleFirst: true, is985: false, is211: true },
+        { id: 'U011', name: '哈尔滨工业大学', province: '23', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '工信部', academicianCount: 42, hasCooperation: '1', cooperationCount: 19, coauthorCount: 8, totalAuthors: 389, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U012', name: '西安交通大学', province: '61', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 38, hasCooperation: '1', cooperationCount: 21, coauthorCount: 11, totalAuthors: 412, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U013', name: '天津大学', province: '12', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 35, hasCooperation: '0', cooperationCount: 0, coauthorCount: 0, totalAuthors: 345, isDoubleFirst: true, is985: true, is211: true },
+        { id: 'U014', name: '山东大学', province: '37', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 31, hasCooperation: '1', cooperationCount: 15, coauthorCount: 7, totalAuthors: 298, isDoubleFirst: true, is985: false, is211: true },
+        { id: 'U015', name: '吉林大学', province: '22', eduType: '公办', schoolCategory: '普通高等学校', eduLevel: '本科', competentDeptName: '教育部', academicianCount: 28, hasCooperation: '1', cooperationCount: 12, coauthorCount: 5, totalAuthors: 267, isDoubleFirst: true, is985: false, is211: true },
+    ];
+
+    // ---- 省份代码映射 ----
+    const provinceMap = {
+        '11': '北京', '12': '天津', '13': '河北', '14': '山西', '15': '内蒙古',
+        '21': '辽宁', '22': '吉林', '23': '黑龙江',
+        '31': '上海', '32': '江苏', '33': '浙江', '34': '安徽', '35': '福建', '36': '江西', '37': '山东',
+        '41': '河南', '42': '湖北', '43': '湖南', '44': '广东', '45': '广西', '46': '海南',
+        '50': '重庆', '51': '四川', '52': '贵州', '53': '云南', '54': '西藏',
+        '61': '陕西', '62': '甘肃', '63': '青海', '64': '宁夏', '65': '新疆'
+    };
+
+    function getProvinceName(code) {
+        return provinceMap[code] || '';
+    }
+
+    // ===================================================================
+    // Tab 切换
+    // ===================================================================
+    function switchTab(tab) {
+        currentTab = tab;
+
+        // 更新Tab样式
+        document.querySelectorAll('.tab-switch-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.tab === tab);
+        });
+
+        // 更新placeholder
+        document.getElementById('searchInput').placeholder = tab === 'author'
+            ? '搜索作者姓名、单位、学科...'
+            : '搜索高校名称、地区...';
+
+        // 切换筛选字段
+        document.getElementById('authorFilterFields').style.display = tab === 'author' ? 'block' : 'none';
+        document.getElementById('universityFilterFields').style.display = tab === 'university' ? 'block' : 'none';
+
+        // 重置筛选条件
+        resetFilters();
+
+        // 执行搜索显示对应Tab的数据
+        executeSearch();
+    }
+
+    // ===================================================================
+    // 筛选面板
+    // ===================================================================
+    function toggleFilter() {
+        const panel = document.getElementById('filterPanel');
+        const btn = document.getElementById('filterToggleBtn');
+        panel.classList.toggle('collapsed');
+        btn.classList.toggle('expanded');
+        btn.classList.toggle('active');
+    }
+
+    function resetFilters() {
+        // 重置教师筛选
+        document.getElementById('logicMode').value = 'and';
+        document.getElementById('authorName').value = '';
+        document.getElementById('organization').value = '';
+        document.getElementById('authorRegion').value = '';
+        document.getElementById('discipline').value = '';
+        document.getElementById('specialty').value = '';
+        document.getElementById('titleLevel').value = '';
+        document.getElementById('titleName').value = '';
+        document.getElementById('expertise').value = '';
+        document.getElementById('cooperationStatus').value = '';
+        document.getElementById('academicianType').value = '';
+
+        // 重置高校筛选
+        document.getElementById('universityName').value = '';
+        document.getElementById('uniRegion').value = '';
+        document.getElementById('schoolType').value = '';
+        document.getElementById('educationLevel').value = '';
+        document.getElementById('governingBody').value = '';
+        document.getElementById('schoolCategory').value = '';
+        document.getElementById('uniHasCooperation').value = '';
+        document.getElementById('uniHasAcademician').value = '';
+
+        // 重置搜索框
+        document.getElementById('searchInput').value = '';
+
+        // 收起面板
+        document.getElementById('filterPanel').classList.add('collapsed');
+        document.getElementById('filterToggleBtn').classList.remove('expanded', 'active');
+
+        // 重置后重新显示全部数据
+        executeSearch();
+    }
+
+    // ===================================================================
+    // 搜索执行
+    // ===================================================================
+    function executeSearch() {
+        const keyword = document.getElementById('searchInput').value.trim();
+
+        if (currentTab === 'author') {
+            searchAuthors(keyword);
+        } else {
+            searchUniversities(keyword);
+        }
+
+        // 收起筛选面板
+        document.getElementById('filterPanel').classList.add('collapsed');
+        document.getElementById('filterToggleBtn').classList.remove('expanded', 'active');
+    }
+
+    function searchAuthors(keyword) {
+        const name = document.getElementById('authorName').value.trim() || keyword;
+        const org = document.getElementById('organization').value.trim();
+        const region = document.getElementById('authorRegion').value;
+        const discipline = document.getElementById('discipline').value;
+        const specialty = document.getElementById('specialty').value;
+        const titleLevel = document.getElementById('titleLevel').value;
+        const titleName = document.getElementById('titleName').value;
+        const expertise = document.getElementById('expertise').value.trim();
+        const cooperationStatus = document.getElementById('cooperationStatus').value;
+        const academicianType = document.getElementById('academicianType').value;
+        const logicMode = document.getElementById('logicMode').value;
+
+        currentData = authorsData.filter(author => {
+            const conditions = [];
+
+            if (name) {
+                conditions.push(author.name.includes(name) || author.organization.includes(name));
+            }
+            if (org) {
+                conditions.push(author.organization.includes(org));
+            }
+            if (region) {
+                conditions.push(author.region === region);
+            }
+            if (discipline) {
+                conditions.push(author.discipline === discipline);
+            }
+            if (specialty) {
+                conditions.push(author.major === specialty);
+            }
+            if (titleLevel) {
+                conditions.push(author.titleLevel === titleLevel);
+            }
+            if (titleName) {
+                conditions.push(author.titleName === titleName);
+            }
+            if (expertise) {
+                conditions.push(author.major.includes(expertise));
+            }
+            if (cooperationStatus === '1') {
+                conditions.push(author.cooperation === true);
+            }
+            if (cooperationStatus === '0') {
+                conditions.push(author.cooperation === false);
+            }
+            if (academicianType && academicianType !== 'none') {
+                conditions.push(author.academician === academicianType);
+            }
+            if (academicianType === 'none') {
+                conditions.push(!author.academician);
+            }
+
+            if (conditions.length === 0) return true;
+            return logicMode === 'and' ? conditions.every(c => c) : conditions.some(c => c);
+        });
+
+        renderAuthorList();
+        updateResultCount(currentData.length, '位作者');
+        showResults();
+    }
+
+    function searchUniversities(keyword) {
+        const name = document.getElementById('universityName').value.trim() || keyword;
+        const province = document.getElementById('uniRegion').value;
+        const schoolType = document.getElementById('schoolType').value;
+        const educationLevel = document.getElementById('educationLevel').value;
+        const governingBody = document.getElementById('governingBody').value;
+        const schoolCategory = document.getElementById('schoolCategory').value;
+        const hasCooperation = document.getElementById('uniHasCooperation').value;
+        const hasAcademician = document.getElementById('uniHasAcademician').value;
+
+        currentData = universitiesData.filter(u => {
+            if (name && !u.name.includes(name)) return false;
+            if (province && u.province !== province) return false;
+            if (schoolType && u.eduType !== schoolType) return false;
+            if (educationLevel && u.eduLevel !== educationLevel) return false;
+            if (governingBody && u.competentDeptName !== governingBody) return false;
+            if (schoolCategory && u.schoolCategory !== schoolCategory) return false;
+            if (hasCooperation && u.hasCooperation !== hasCooperation) return false;
+            if (hasAcademician === '1' && u.academicianCount === 0) return false;
+            if (hasAcademician === '0' && u.academicianCount > 0) return false;
+            return true;
+        });
+
+        renderUniversityList();
+        updateResultCount(currentData.length, '所高校');
+        showResults();
+    }
+
+    // ===================================================================
+    // 渲染结果
+    // ===================================================================
+    function renderAuthorList() {
+        const container = document.getElementById('resultList');
+        container.innerHTML = '';
+
+        if (currentData.length === 0) {
+            container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">未找到符合条件的作者</div></div>';
+            return;
+        }
+
+        currentData.forEach(author => {
+            const card = document.createElement('div');
+            card.className = 'teacher-card';
+            card.onclick = () => goToProfile('author', author.id);
+
+            const academicianBadge = author.academician
+                ? `<span class="academician-badge">${author.academician}</span>`
+                : '';
+
+            const cooperationTag = author.cooperation
+                ? '<span class="cooperation-tag cooperated">已合作</span>'
+                : '<span class="cooperation-tag not-cooperated">未合作</span>';
+
+            card.innerHTML = `
+                <div class="teacher-card-header">
+                    <div class="teacher-avatar">${author.avatar}</div>
+                    <div class="teacher-info">
+                        <div class="teacher-name-row">
+                            <span class="teacher-name">${author.name}</span>
+                            ${academicianBadge}
+                        </div>
+                        <div class="teacher-org-region">${author.organization} · ${author.region}</div>
+                        <div class="teacher-title-row">${author.titleLevel} · ${author.titleName} · ${author.discipline}</div>
+                    </div>
+                </div>
+                <div class="teacher-card-footer">
+                    ${cooperationTag}
+                    <span class="view-detail-link">查看详情</span>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderUniversityList() {
+        const container = document.getElementById('resultList');
+        container.innerHTML = '';
+
+        if (currentData.length === 0) {
+            container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">未找到符合条件的高校</div></div>';
+            return;
+        }
+
+        currentData.forEach(uni => {
+            const card = document.createElement('div');
+            card.className = 'university-card';
+            card.onclick = () => goToProfile('university', uni.id);
+
+            const badges = [];
+            if (uni.is985) badges.push('<span class="university-badge highlight">985</span>');
+            if (uni.is211) badges.push('<span class="university-badge highlight">211</span>');
+            if (uni.isDoubleFirst) badges.push('<span class="university-badge normal">双一流</span>');
+
+            card.innerHTML = `
+                <div class="university-card-header">
+                    <div class="university-icon">${uni.name.charAt(0)}</div>
+                    <div class="university-info">
+                        <div class="university-name-row">
+                            <span class="university-name">${uni.name}</span>
+                            ${badges.join('')}
+                        </div>
+                        <div class="university-address">${getProvinceName(uni.province)} · ${uni.eduType} · ${uni.eduLevel}</div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // ===================================================================
+    // UI 状态管理
+    // ===================================================================
+    function showResults() {
+        hasSearched = true;
+        document.getElementById('homeGuide').style.display = 'none';
+        document.getElementById('resultList').classList.remove('hidden');
+    }
+
+    function showGuide() {
+        hasSearched = false;
+        document.getElementById('homeGuide').style.display = 'flex';
+        document.getElementById('resultList').classList.add('hidden');
+    }
+
+    function updateResultCount(count, unit) {
+        document.getElementById('resultTotal').textContent = count;
+        document.getElementById('resultCount').innerHTML = `检索结果 <span class="count-num">${count}</span> ${unit}`;
+    }
+
+    // ===================================================================
+    // 跳转详情页（带状态保存）
+    // ===================================================================
+    function goToProfile(type, id) {
+        // 保存当前搜索状态到 sessionStorage
+        const state = {
+            tabMode: currentTab,
+            searchKeyword: document.getElementById('searchInput').value,
+            timestamp: Date.now()
+        };
+
+        if (type === 'author') {
+            state.filters = {
+                logicMode: document.getElementById('logicMode').value,
+                authorName: document.getElementById('authorName').value,
+                organization: document.getElementById('organization').value,
+                authorRegion: document.getElementById('authorRegion').value,
+                discipline: document.getElementById('discipline').value,
+                specialty: document.getElementById('specialty').value,
+                titleLevel: document.getElementById('titleLevel').value,
+                titleName: document.getElementById('titleName').value,
+                expertise: document.getElementById('expertise').value,
+                cooperationStatus: document.getElementById('cooperationStatus').value,
+                academicianType: document.getElementById('academicianType').value
+            };
+            sessionStorage.setItem('unifiedSearchState', JSON.stringify(state));
+            window.location.href = `teacher-profile.html?id=${id}`;
+        } else {
+            state.filters = {
+                universityName: document.getElementById('universityName').value,
+                uniRegion: document.getElementById('uniRegion').value,
+                schoolType: document.getElementById('schoolType').value,
+                educationLevel: document.getElementById('educationLevel').value,
+                governingBody: document.getElementById('governingBody').value,
+                schoolCategory: document.getElementById('schoolCategory').value,
+                uniHasCooperation: document.getElementById('uniHasCooperation').value,
+                uniHasAcademician: document.getElementById('uniHasAcademician').value
+            };
+            sessionStorage.setItem('unifiedSearchState', JSON.stringify(state));
+            window.location.href = `university-profile.html?id=${id}`;
+        }
+    }
+
+    // ===================================================================
+    // 状态恢复（从详情页返回时）
+    // ===================================================================
+    function restoreState() {
+        const savedState = sessionStorage.getItem('unifiedSearchState');
+        if (!savedState) return false;
+
+        const state = JSON.parse(savedState);
+        sessionStorage.removeItem('unifiedSearchState');
+
+        // 恢复Tab
+        if (state.tabMode) {
+            switchTab(state.tabMode);
+        }
+
+        // 恢复搜索关键词
+        if (state.searchKeyword) {
+            document.getElementById('searchInput').value = state.searchKeyword;
+        }
+
+        // 恢复筛选条件
+        if (state.filters) {
+            const f = state.filters;
+            if (state.tabMode === 'author') {
+                if (f.logicMode) document.getElementById('logicMode').value = f.logicMode;
+                if (f.authorName) document.getElementById('authorName').value = f.authorName;
+                if (f.organization) document.getElementById('organization').value = f.organization;
+                if (f.authorRegion) document.getElementById('authorRegion').value = f.authorRegion;
+                if (f.discipline) document.getElementById('discipline').value = f.discipline;
+                if (f.specialty) document.getElementById('specialty').value = f.specialty;
+                if (f.titleLevel) document.getElementById('titleLevel').value = f.titleLevel;
+                if (f.titleName) document.getElementById('titleName').value = f.titleName;
+                if (f.expertise) document.getElementById('expertise').value = f.expertise;
+                if (f.cooperationStatus) document.getElementById('cooperationStatus').value = f.cooperationStatus;
+                if (f.academicianType) document.getElementById('academicianType').value = f.academicianType;
+            } else {
+                if (f.universityName) document.getElementById('universityName').value = f.universityName;
+                if (f.uniRegion) document.getElementById('uniRegion').value = f.uniRegion;
+                if (f.schoolType) document.getElementById('schoolType').value = f.schoolType;
+                if (f.educationLevel) document.getElementById('educationLevel').value = f.educationLevel;
+                if (f.governingBody) document.getElementById('governingBody').value = f.governingBody;
+                if (f.schoolCategory) document.getElementById('schoolCategory').value = f.schoolCategory;
+                if (f.uniHasCooperation) document.getElementById('uniHasCooperation').value = f.uniHasCooperation;
+                if (f.uniHasAcademician) document.getElementById('uniHasAcademician').value = f.uniHasAcademician;
+            }
+        }
+
+        // 执行搜索恢复结果
+        executeSearch();
+        return true;
+    }
+
+    // ===================================================================
+    // 初始化
+    // ===================================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // 回车搜索
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                executeSearch();
+            }
+        });
+
+        // 尝试恢复状态
+        const restored = restoreState();
+        if (restored) return;
+
+        // 检查 URL 参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get('tab');
+        const searchParam = urlParams.get('search');
+
+        if (tabParam === 'university') {
+            switchTab('university');
+        }
+
+        if (searchParam) {
+            document.getElementById('searchInput').value = searchParam;
+            executeSearch();
+        } else {
+            // 默认显示全部教师数据
+            currentData = [...authorsData];
+            renderAuthorList();
+            updateResultCount(currentData.length, '位作者');
+            showResults();
+        }
+    });
+    </script>
+
+</body>
+</html>

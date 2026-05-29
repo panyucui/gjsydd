@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的 - 高等教育出版社</title>
+
+    <link rel="stylesheet" href="css/ios-navigation.css">
+    <link rel="stylesheet" href="css/ios-components.css">
+
+    <style>
+        body {
+            padding-bottom: 70px;
+            background: #f5f7fa;
+        }
+
+        /* ===== 顶部标题 ===== */
+        .my-header {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 16px;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 600;
+            color: #000;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 0.5px solid rgba(60, 60, 67, 0.12);
+        }
+
+        .my-page {
+            padding: 16px;
+        }
+
+        /* ===== 用户信息卡片 ===== */
+        .user-card {
+            background: linear-gradient(135deg, #0052ff 0%, #0066cc 100%);
+            border-radius: 16px;
+            padding: 24px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 16px rgba(0, 82, 255, 0.25);
+        }
+
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .user-role {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .user-dept {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部标题 -->
+    <div class="my-header">我的</div>
+
+    <!-- 页面内容 -->
+    <div class="my-page">
+        <!-- 用户信息卡片 -->
+        <div class="user-card">
+            <div class="user-avatar">张</div>
+            <div class="user-info">
+                <div class="user-name">张三</div>
+                <div class="user-role">角色：编辑人员</div>
+                <div class="user-dept">部门：高等教育事业部</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="ios-tab-nav">
+        <a href="index.html" class="ios-tab-item">
+            <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <span class="ios-tab-label">检索</span>
+        </a>
+        <a href="my.html" class="ios-tab-item active">
+            <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span class="ios-tab-label">我的</span>
+        </a>
+    </nav>
+
+</body>
+</html>

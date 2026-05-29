@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>作者画像 - 高等教育出版社</title>
+
+    <link rel="stylesheet" href="css/ios-navigation.css">
+    <link rel="stylesheet" href="css/ios-components.css">
+
+    <style>
+        body {
+            padding-bottom: 70px;
+            background: #f5f7fa;
+        }
+
+        /* ===== 顶部导航 ===== */
+        .ios-header {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 0 16px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 0.5px solid rgba(60, 60, 67, 0.12);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .ios-header-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #000;
+            text-align: center;
+            flex: 1;
+        }
+
+        .ios-header-btn {
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #007AFF;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .ios-header-btn:active {
+            opacity: 0.6;
+        }
+
+        /* ===== 头部信息卡片 - 天眼查风格 ===== */
+        .profile-header {
+            background: linear-gradient(135deg, #0052ff 0%, #0066cc 100%);
+            margin: 16px;
+            padding: 20px;
+            border-radius: 16px;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(0, 82, 255, 0.25);
+        }
+
+        .profile-header-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .info-section {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .academician-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .info-meta {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 8px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .status-badges {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 11px;
+            color: #fff;
+        }
+
+        .status-badge.success {
+            background: rgba(52, 199, 89, 0.3);
+        }
+
+        /* ===== 内容区块 ===== */
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 0 16px 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0052ff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: #0052ff;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+
+        /* ===== 信息网格 ===== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .info-item {
+            padding: 12px;
+            background: #f5f7fa;
+            border-radius: 8px;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .info-item .value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .info-item .value.highlight {
+            color: #0052ff;
+        }
+
+        .ai-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        /* ===== 时间线 ===== */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+            margin-top: 8px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #f0f0f0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 16px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -18px;
+            top: 4px;
+            width: 8px;
+            height: 8px;
+            background: #0052ff;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #0052ff;
+        }
+
+        .timeline-item .time {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .timeline-item .title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .timeline-item .desc {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* ===== 文本块 ===== */
+        .text-block {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        /* ===== 底部操作栏 ===== */
+        .profile-toolbar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 428px;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 0.5px solid rgba(60, 60, 67, 0.12);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航 -->
+    <div class="ios-header">
+        <div class="ios-header-btn left" onclick="goBack()">
+            <svg width="12" height="20" viewBox="0 0 12 20" fill="none">
+                <path d="M10 2L2 10L10 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span style="margin-left: 4px;">返回</span>
+        </div>
+        <div class="ios-header-title">作者画像</div>
+        <div class="ios-header-btn right"></div>
+    </div>
+
+    <!-- 头部信息卡片 -->
+    <div class="profile-header">
+        <div class="profile-header-row">
+            <div class="avatar">张</div>
+            <div class="info-section">
+                <div class="name-row">
+                    <span class="name">张悠慧</span>
+                    <span class="academician-badge">中科院院士</span>
+                </div>
+                <div class="info-meta">
+                    <span>清华大学</span>
+                    <span>·</span>
+                    <span>北京</span>
+                </div>
+                <div class="info-meta">
+                    <span>正高级</span>
+                    <span>·</span>
+                    <span>教授</span>
+                    <span>·</span>
+                    <span>工学 · 计算机</span>
+                </div>
+                <div class="status-badges">
+                    <span class="status-badge success">已合作</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 基础信息 -->
+    <div class="section">
+        <div class="section-title">基础信息</div>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>姓名</label>
+                <div class="value">张悠慧</div>
+            </div>
+            <div class="info-item">
+                <label>性别</label>
+                <div class="value">女</div>
+            </div>
+            <div class="info-item">
+                <label>出生年月</label>
+                <div class="value">1975年3月<span class="ai-tag">AI采集</span></div>
+            </div>
+            <div class="info-item">
+                <label>籍贯</label>
+                <div class="value">浙江杭州<span class="ai-tag">AI采集</span></div>
+            </div>
+            <div class="info-item">
+                <label>学历</label>
+                <div class="value">研究生<span class="ai-tag">AI采集</span></div>
+            </div>
+            <div class="info-item">
+                <label>学位</label>
+                <div class="value">工学博士<span class="ai-tag">AI采集</span></div>
+            </div>
+            <div class="info-item">
+                <label>学术头衔</label>
+                <div class="value highlight">中科院院士<span class="ai-tag">AI采集</span></div>
+            </div>
+            <div class="info-item">
+                <label>工作单位</label>
+                <div class="value">清华大学</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 工作履历 -->
+    <div class="section">
+        <div class="section-title">工作履历</div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="time">2012年 - 至今</div>
+                <div class="title">清华大学 · 高性能计算技术研究所 副所长</div>
+                <div class="desc">从事高性能计算与类脑智能研究</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time">2006年 - 2007年</div>
+                <div class="title">UC Berkeley 访问学者</div>
+                <div class="desc">为期一年的学术访问</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time">2003年 - 2012年</div>
+                <div class="title">清华大学信研院 · 微处理器中心 副主任</div>
+                <div class="desc">微处理器与片上系统研发</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time">2002年</div>
+                <div class="title">清华大学 · 高性能计算所 留任</div>
+                <div class="desc">继续从事科研工作</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要学术成就 -->
+    <div class="section">
+        <div class="section-title">主要学术成就</div>
+        <div class="text-block">
+            2014年底以来围绕类脑智能开展类脑芯片与基础软件研究：针对类脑智能计算系统因缺乏完备性理论支撑而导致的层次接口模糊、软硬件紧耦合等问题，提出受神经网络计算特征启发的新的计算理论。
+            <br><br>
+            开展新型处理器微体系结构与类脑计算基础软硬件研究。主持设计并实现了具有自主产权的支持IA64体系架构的6个集群软件，这是国际上第一个完整开放源代码的IA64集群软件系统。本研究组作为创始成员创建了IA64软件开发联盟Gelato，公开发布上述软件。
+        </div>
+    </div>
+
+    <!-- 获奖与荣誉 -->
+    <div class="section">
+        <div class="section-title">获奖与荣誉</div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="time">2018年</div>
+                <div class="title">高等教育国家级教学成果奖二等奖</div>
+                <div class="desc">面向计算机系统能力培养的课程体系改革</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time">2017年</div>
+                <div class="title">北京市高等教育教学成果奖一等奖</div>
+                <div class="desc">课程体系改革成果</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time">2020年</div>
+                <div class="title">指导博士生获CCF优秀博士学位论文奖</div>
+                <div class="desc">清华大学优秀博士毕业生</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部操作栏 -->
+    <div class="profile-toolbar">
+        <button class="ios-btn-capsule gray small" onclick="goBack()">返回</button>
+        <button class="ios-btn-capsule secondary small" onclick="viewUniversity()">查看单位</button>
+    </div>
+
+    <!-- 底部导航（详情页隐藏） -->
+    <nav class="ios-tab-nav" style="display: none;">
+        <a href="index.html" class="ios-tab-item">
+            <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <span class="ios-tab-label">检索</span>
+        </a>
+        <a href="my.html" class="ios-tab-item">
+            <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span class="ios-tab-label">我的</span>
+        </a>
+    </nav>
+
+    <script>
+        function goBack() {
+            history.back();
+        }
+
+        function viewUniversity() {
+            window.location.href = 'university-profile.html?id=' + encodeURIComponent('清华大学');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if (id) {
+                console.log('加载作者画像数据，ID:', id);
+            }
+        });
+    </script>
+</body>
+</html>

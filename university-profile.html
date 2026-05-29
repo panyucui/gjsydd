@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>高校画像 - 高等教育出版社</title>
+
+    <link rel="stylesheet" href="css/ios-navigation.css">
+    <link rel="stylesheet" href="css/ios-components.css">
+
+    <style>
+        body {
+            padding-bottom: 70px;
+            background: #f5f7fa;
+        }
+
+        /* ===== 顶部导航 ===== */
+        .detail-header {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 0.5px solid rgba(60, 60, 67, 0.12);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #0052ff;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .back-btn:active {
+            opacity: 0.6;
+        }
+
+        .header-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #000;
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-action {
+            color: #0052ff;
+            font-size: 13px;
+            cursor: pointer;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .header-action:active {
+            opacity: 0.6;
+        }
+
+        /* ===== 头部信息卡片 ===== */
+        .profile-card {
+            background: linear-gradient(135deg, #0052ff 0%, #0066cc 100%);
+            margin: 16px;
+            padding: 20px;
+            border-radius: 16px;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(0, 82, 255, 0.25);
+        }
+
+        .university-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .university-name {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .university-badges {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge-tag {
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .badge-tag.highlight {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .university-location {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* ===== 信息区块 ===== */
+        .info-section {
+            background: #fff;
+            margin: 0 16px 12px;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0052ff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: #0052ff;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .info-item {
+            padding: 12px;
+            background: #f5f7fa;
+            border-radius: 8px;
+        }
+
+        .info-item .label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+
+        .info-item .value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .info-item.highlight .value {
+            color: #0052ff;
+        }
+
+        /* ===== 教师列表预览 ===== */
+        .teachers-preview {
+            background: #fff;
+            margin: 0 16px 12px;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .preview-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0052ff;
+            display: flex;
+            align-items: center;
+        }
+
+        .preview-title::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: #0052ff;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+
+        .preview-link {
+            font-size: 13px;
+            color: #0052ff;
+            cursor: pointer;
+        }
+
+        .preview-link:active {
+            opacity: 0.6;
+        }
+
+        .teacher-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+
+        .teacher-item:last-child {
+            border-bottom: none;
+        }
+
+        .teacher-item:active {
+            background: #f5f7fa;
+        }
+
+        .teacher-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #0052ff 0%, #0066cc 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .teacher-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .teacher-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .teacher-title {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .teacher-badge {
+            padding: 2px 8px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        /* ===== 底部操作栏 ===== */
+        .action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 428px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 0.5px solid rgba(60, 60, 67, 0.12);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: none;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-btn.primary {
+            background: #0052ff;
+            color: #fff;
+        }
+
+        .action-btn.secondary {
+            background: #f5f7fa;
+            color: #0052ff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航 -->
+    <div class="detail-header">
+        <div class="back-btn" onclick="goBack()">
+            <svg width="12" height="20" viewBox="0 0 12 20" fill="none">
+                <path d="M10 2L2 10L10 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>返回</span>
+        </div>
+        <div class="header-title">高校画像</div>
+        <div class="header-action" onclick="viewTeachers()">查看教师</div>
+    </div>
+
+    <!-- 头部信息卡片 -->
+    <div class="profile-card">
+        <div class="university-icon">🏛️</div>
+        <div class="university-name" id="uniName">清华大学</div>
+        <div class="university-badges" id="uniBadges">
+            <span class="badge-tag highlight">985</span>
+            <span class="badge-tag highlight">211</span>
+            <span class="badge-tag">双一流</span>
+            <span class="badge-tag">教育部直属</span>
+        </div>
+        <div class="university-location" id="uniLocation">北京 · 普通高等学校 · 本科</div>
+    </div>
+
+    <!-- 基本信息 -->
+    <div class="info-section">
+        <div class="section-title">基本信息</div>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="label">学校代码</div>
+                <div class="value" id="infoCode">10003</div>
+            </div>
+            <div class="info-item">
+                <div class="label">成立时间</div>
+                <div class="value" id="infoYear">1911年</div>
+            </div>
+            <div class="info-item">
+                <div class="label">学校类型</div>
+                <div class="value" id="infoType">普通高等学校</div>
+            </div>
+            <div class="info-item">
+                <div class="label">办学层次</div>
+                <div class="value" id="infoLevel">本科</div>
+            </div>
+            <div class="info-item">
+                <div class="label">办学类型</div>
+                <div class="value" id="infoEduType">公办</div>
+            </div>
+            <div class="info-item">
+                <div class="label">主管部门</div>
+                <div class="value" id="infoDept">教育部</div>
+            </div>
+            <div class="info-item highlight">
+                <div class="label">合作状态</div>
+                <div class="value" id="infoCooperation">已合作</div>
+            </div>
+            <div class="info-item">
+                <div class="label">合作次数</div>
+                <div class="value" id="infoCoopCount">102次</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 教师列表预览 -->
+    <div class="teachers-preview">
+        <div class="preview-header">
+            <div class="preview-title">校内教师</div>
+            <div class="preview-link" onclick="viewTeachers()">查看全部 →</div>
+        </div>
+        <div class="teacher-item" onclick="goToTeacherProfile('A001')">
+            <div class="teacher-avatar">张</div>
+            <div class="teacher-info">
+                <div class="teacher-name">张悠慧</div>
+                <div class="teacher-title">正高级 · 教授 · 工学 · 计算机</div>
+            </div>
+            <span class="teacher-badge">院士</span>
+        </div>
+        <div class="teacher-item" onclick="goToTeacherProfile('A012')">
+            <div class="teacher-avatar">杨</div>
+            <div class="teacher-info">
+                <div class="teacher-name">杨振宁</div>
+                <div class="teacher-title">正高级 · 教授 · 理学 · 物理</div>
+            </div>
+            <span class="teacher-badge">院士</span>
+        </div>
+        <div class="teacher-item" onclick="goToTeacherProfile('A018')">
+            <div class="teacher-avatar">怀</div>
+            <div class="teacher-info">
+                <div class="teacher-name">怀进鹏</div>
+                <div class="teacher-title">正高级 · 教授 · 工学 · 计算机</div>
+            </div>
+            <span class="teacher-badge">院士</span>
+        </div>
+    </div>
+
+    <!-- 底部操作栏 -->
+    <div class="action-bar">
+        <div class="action-btn secondary" onclick="goBack()">返回列表</div>
+        <div class="action-btn primary" onclick="viewTeachers()">查看校内教师</div>
+    </div>
+
+    <!-- 底部导航（详情页隐藏） -->
+    <nav class="ios-tab-nav" style="display: none;">
+        <a href="index.html" class="ios-tab-item">
+            <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <span class="ios-tab-label">检索</span>
+        </a>
+        <a href="my.html" class="ios-tab-item">
+            <svg class="ios-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span class="ios-tab-label">我的</span>
+        </a>
+    </nav>
+
+    <script>
+        // 模拟高校数据
+        const universityData = {
+            id: 'U002',
+            name: '清华大学',
+            code: '10003',
+            year: '1911年',
+            region: '北京',
+            type: '普通高等学校',
+            level: '本科',
+            eduType: '公办',
+            dept: '教育部',
+            badges: ['985', '211', '双一流', '教育部直属'],
+            academician: 178,
+            teacher: 1567,
+            coauthor: 56,
+            cooperation: true,
+            coopCount: 102
+        };
+
+        // 检查URL参数，加载对应高校数据
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            // 高校数据映射
+            const uniMap = {
+                'U001': { id:'U001', name:'北京大学', code:'10001', year:'1898年', region:'北京', type:'普通高等学校', level:'本科', eduType:'公办', dept:'教育部', badges:['985','211','双一流','教育部直属'], academician:156, teacher:1234, coauthor:45, cooperation:true, coopCount:89 },
+                'U002': { id:'U002', name:'清华大学', code:'10003', year:'1911年', region:'北京', type:'普通高等学校', level:'本科', eduType:'公办', dept:'教育部', badges:['985','211','双一流','教育部直属'], academician:178, teacher:1567, coauthor:56, cooperation:true, coopCount:102 },
+                'U003': { id:'U003', name:'复旦大学', code:'10246', year:'1905年', region:'上海', type:'普通高等学校', level:'本科', eduType:'公办', dept:'教育部', badges:['985','211','双一流','教育部直属'], academician:98, teacher:890, coauthor:34, cooperation:true, coopCount:67 },
+                'U005': { id:'U005', name:'浙江大学', code:'10335', year:'1897年', region:'浙江', type:'普通高等学校', level:'本科', eduType:'公办', dept:'教育部', badges:['985','211','双一流','教育部直属'], academician:89, teacher:756, coauthor:28, cooperation:true, coopCount:56 },
+            };
+
+            if (id && uniMap[id]) {
+                fillData(uniMap[id]);
+            } else {
+                fillData(universityData);
+            }
+        });
+
+        // 填充数据
+        function fillData(data) {
+            document.getElementById('uniName').textContent = data.name;
+            document.getElementById('uniLocation').textContent = `${data.region} · ${data.type} · ${data.level}`;
+            document.getElementById('infoCode').textContent = data.code;
+            document.getElementById('infoYear').textContent = data.year;
+            document.getElementById('infoType').textContent = data.type;
+            document.getElementById('infoLevel').textContent = data.level;
+            document.getElementById('infoEduType').textContent = data.eduType;
+            document.getElementById('infoDept').textContent = data.dept;
+            document.getElementById('infoCooperation').textContent = data.cooperation ? '已合作' : '未合作';
+            document.getElementById('infoCoopCount').textContent = data.coopCount + '次';
+
+            // 渲染徽章
+            const badgeContainer = document.getElementById('uniBadges');
+            badgeContainer.innerHTML = data.badges.map(badge =>
+                `<span class="badge-tag ${['985', '211'].includes(badge) ? 'highlight' : ''}">${badge}</span>`
+            ).join('');
+        }
+
+        function goBack() {
+            history.back();
+        }
+
+        // 查看校内教师 - 跳转到统一检索页
+        function viewTeachers() {
+            window.location.href = 'index.html?tab=university&search=' + encodeURIComponent(universityData.name);
+        }
+
+        // 进入教师详情
+        function goToTeacherProfile(id) {
+            window.location.href = 'teacher-profile.html?id=' + id;
+        }
+    </script>
+</body>
+</html>
